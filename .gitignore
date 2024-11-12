@@ -1,0 +1,9 @@
+.DS_Store
+report/*
+*.log
+temp/*
+.idea
+__pycache__
+
+/data
+/test/data
