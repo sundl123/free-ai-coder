@@ -1,7 +1,7 @@
 <div align="center">
 
 <p align="center">
-<img width="300px" alt="Fee AI Coder" src="assets/logo.png">
+<img width="300px" alt="Fee AI Coder" src="assets/logo.jpg">
 </p>
 
 # Free AI Coder
