@@ -35,6 +35,7 @@ AVATAR_MATERIAL_ICON_EXECUTION = ":material/screenshot_monitor:"
 AVATAR_MATERIAL_ICON_IMAGE = ":material/image:"
 
 OPENAI_MODELS = ["gpt-4-turbo-preview", "gpt-4-turbo"]
+OPENAI_MODELS = ["gpt-4-turbo-preview", "gpt-4-turbo"]
 MODEL_PROVIDER_KEY = "model_provider"
 OPENAI_API_KEY_KEY = "openai_api_key"
 OPENAI_MODEL_KEY = "openai_model"
@@ -192,6 +193,12 @@ def setup_sidebar_config_panel():
                 type="password",
                 key="deepseek_api_key",
                 help="请输入您的 DeepSeek API Key"
+            )
+
+            selected_model = st.selectbox(
+                "选择模型",
+                options=OPENAI_MODELS,
+                key=OPENAI_MODEL_KEY
             )
 
             if not deepseek_api_key:

@@ -30,7 +30,12 @@ class DeepSeekLLMClient:
                 # 解析每一行的JSON数据
                 decoded_line = line.decode('utf-8')
                 if decoded_line.startswith('data: '):
-                    json_data = json.loads(decoded_line[6:])
+                    json_str = decoded_line[6:]
+                    if json_str == "[DONE]":
+                        break
+
+                    json_data = json.loads(json_str)
+
                     delta = json_data.get('choices', [{}])[0].get('delta', {})
                     content = delta.get('content', '')
 
