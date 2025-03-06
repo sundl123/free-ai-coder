@@ -33,6 +33,9 @@ class DeepSeekLLMClient:
 
         # 处理流式输出
         is_first = True
+        is_first_reasoning_token = True
+        is_first_content_token = True
+        has_reasoning_token = False
         for line in response.iter_lines():
             if line:
                 # 解析每一行的JSON数据
@@ -44,21 +47,33 @@ class DeepSeekLLMClient:
 
                     json_data = json.loads(json_str)
 
-                    delta = json_data.get('choices', [{}])[0].get('delta', {})
-                    content = delta.get('content', '')
-
                     if is_first:
-                        yield {"role": "assistant", "delta": content, "type": "text", "finish_reason": ""}
+                        yield {"role": "assistant", "delta": "", "type": "text", "finish_reason": ""}
                         is_first = False
 
-                    yield {"role": "assistant", "delta": content, "type": "text", "finish_reason": ""}
+                    delta = json_data.get('choices', [{}])[0].get('delta', {})
+                    content = delta.get('content', '')
+                    reasoning_content = delta.get('reasoning_content', '')
+
+                    if reasoning_content:
+                        has_reasoning_token = True
+                        if is_first_reasoning_token:
+                            reasoning_content = "思维链过程: " + reasoning_content
+                            is_first_reasoning_token = False
+                        yield {"role": "assistant", "delta": reasoning_content, "type": "text", "finish_reason": ""}
+                    
+                    if content:
+                        if is_first_content_token and has_reasoning_token:
+                            content = "\n\n思维链结果: " + content
+                            is_first_content_token = False
+                        yield {"role": "assistant", "delta": content, "type": "text", "finish_reason": ""}
 
         yield end_of_message_data
 
 # 示例用法
 if __name__ == "__main__":
     api_key = "36d865bc-90e1-4daf-82b6-767b3e0ddda5"
-    model = "ep-20250306140353-knhhc"
+    model = "ep-20250306140324-6c4jw"
     client = DeepSeekLLMClient(api_key,model)
 
     messages = [{"role": "user", "content": "我要有研究推理模型与非推理模型区别的课题，怎么体现我的专业性"}]

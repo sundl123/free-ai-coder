@@ -185,8 +185,6 @@ def setup_sidebar_config_panel():
 
             if not api_key:
                 st.error("请输入 OpenAI API Key")
-
-        # DeepSeek 特定设置
         elif model_provider == "DeepSeek":
             deepseek_api_key = st.text_input(
                 "DeepSeek API Key",
@@ -194,7 +192,6 @@ def setup_sidebar_config_panel():
                 key="deepseek_api_key",
                 help="请输入您的 DeepSeek API Key"
             )
-
             deepseek_model_endpoint = st.text_input(
                 "DeepSeek Model Endpoint",
                 type="password",
