@@ -1,6 +1,13 @@
 import requests
 import json
 
+end_of_message_data = {
+        "role": "assistant",
+        "delta": "",
+        "type": "",
+        "finish_reason": "stop"
+    }
+
 class DeepSeekLLMClient:
     def __init__(self, api_key, model="deepseek-r1-250120"):
         self.api_key = api_key
@@ -25,6 +32,7 @@ class DeepSeekLLMClient:
             raise Exception(f"请求失败，状态码: {response.status_code}, 内容: {response.text}")
 
         # 处理流式输出
+        is_first = True
         for line in response.iter_lines():
             if line:
                 # 解析每一行的JSON数据
@@ -39,10 +47,13 @@ class DeepSeekLLMClient:
                     delta = json_data.get('choices', [{}])[0].get('delta', {})
                     content = delta.get('content', '')
 
-                    if 'end_of_message' in delta:
-                        yield {"role": "assistant", "delta": "", "type": "", "finish_reason": "stop"}
-                    else:
+                    if is_first:
                         yield {"role": "assistant", "delta": content, "type": "text", "finish_reason": ""}
+                        is_first = False
+
+                    yield {"role": "assistant", "delta": content, "type": "text", "finish_reason": ""}
+
+        yield end_of_message_data
 
 # 示例用法
 if __name__ == "__main__":
