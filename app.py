@@ -5,6 +5,7 @@ import base64
 import os
 import pandas as pd
 from llm_client_openai import OpenAILLMClient
+from llm_client_deepseek import DeepSeekLLMClient
 from kernel_gateway_client import GatewayClient
 
 MNT_DATA_DIR = "/mnt/data"
@@ -162,7 +163,7 @@ def setup_sidebar_config_panel():
         # 选择模型提供商
         model_provider = st.radio(
             "选择模型提供商",
-            options=["OpenAI", "Claude", "商汤小浣熊"],
+            options=["OpenAI", "Claude", "商汤小浣熊", "DeepSeek"],  # 添加 DeepSeek 选项
             key=MODEL_PROVIDER_KEY
         )
 
@@ -183,6 +184,19 @@ def setup_sidebar_config_panel():
 
             if not api_key:
                 st.error("请输入 OpenAI API Key")
+
+        # DeepSeek 特定设置
+        elif model_provider == "DeepSeek":
+            deepseek_api_key = st.text_input(
+                "DeepSeek API Key",
+                type="password",
+                key="deepseek_api_key",
+                help="请输入您的 DeepSeek API Key"
+            )
+
+            if not deepseek_api_key:
+                st.error("请输入 DeepSeek API Key")
+
         elif model_provider == "Claude":
             st.info("Claude模型接入即将推出，敬请期待！")
             st.stop()  # 阻止继续执行
@@ -194,6 +208,8 @@ def setup_sidebar_config_panel():
         if st.button("确认设置"):
             if model_provider == "OpenAI" and not api_key:
                 st.error("请先输入 OpenAI API Key")
+            elif model_provider == "DeepSeek" and not deepseek_api_key:
+                st.error("请先输入 DeepSeek API Key")
             else:
                 # 重新初始化 LLM 客户端
                 if LLM_CLIENT_KEY in st.session_state:
@@ -203,6 +219,10 @@ def setup_sidebar_config_panel():
                     st.session_state[LLM_CLIENT_KEY] = OpenAILLMClient(
                         api_key,
                         model=selected_model
+                    )
+                elif model_provider == "DeepSeek":
+                    st.session_state[LLM_CLIENT_KEY] = DeepSeekLLMClient(
+                        deepseek_api_key,
                     )
                 else:
                     st.info("Currently Unsupported Model Provider")
