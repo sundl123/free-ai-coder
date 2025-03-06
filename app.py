@@ -195,14 +195,17 @@ def setup_sidebar_config_panel():
                 help="请输入您的 DeepSeek API Key"
             )
 
-            selected_model = st.selectbox(
-                "选择模型",
-                options=OPENAI_MODELS,
-                key=OPENAI_MODEL_KEY
+            deepseek_model_endpoint = st.text_input(
+                "DeepSeek Model Endpoint",
+                type="password",
+                key="deepseek_model_endpoint",
+                help="请输入您的 DeepSeek API Key"
             )
 
             if not deepseek_api_key:
                 st.error("请输入 DeepSeek API Key")
+            if not deepseek_model_endpoint:
+                st.error("请输入 DeepSeek Model Endpoint")
 
         elif model_provider == "Claude":
             st.info("Claude模型接入即将推出，敬请期待！")
@@ -230,6 +233,7 @@ def setup_sidebar_config_panel():
                 elif model_provider == "DeepSeek":
                     st.session_state[LLM_CLIENT_KEY] = DeepSeekLLMClient(
                         deepseek_api_key,
+                        deepseek_model_endpoint,
                     )
                 else:
                     st.info("Currently Unsupported Model Provider")
