@@ -224,6 +224,8 @@ def setup_sidebar_config_panel():
                 # 重新初始化 LLM 客户端
                 if LLM_CLIENT_KEY in st.session_state:
                     del st.session_state[LLM_CLIENT_KEY]
+                
+                st.session_state["model_provider_str"] = model_provider
 
                 if model_provider == "OpenAI":
                     st.session_state[LLM_CLIENT_KEY] = OpenAILLMClient(
@@ -312,10 +314,14 @@ def set_up_user_input_box(session_dir_path:str, kernel_client):
             )
 
             event = next(stream)
+            print(f'event: {event}')
             if event["type"] == "text":
                 with st.chat_message("assistant"):
                     response = st.write_stream(extract_delta_stream(stream))
                 st.session_state.messages.append({"role": "assistant", "content": response, 'type': 'text'})
+
+                if st.session_state["model_provider_str"] == "DeepSeek":
+                    break
             elif event["type"] == "code":
                 # display code
                 with st.chat_message("assistant", avatar=AVATAR_MATERIAL_ICON_CODE):
@@ -368,6 +374,7 @@ def set_up_user_input_box(session_dir_path:str, kernel_client):
                     with st.chat_message("assistant", avatar=AVATAR_MATERIAL_ICON_IMAGE):
                         st.image(img_url, caption=os.path.basename(img_url))
             elif event["finish_reason"] == "stop":
+                print("Stream finished by user stop.")
                 drain_stream(stream)
                 break
 
