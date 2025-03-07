@@ -1,13 +1,6 @@
 import requests
 import json
 
-end_of_message_data = {
-        "role": "assistant",
-        "delta": "",
-        "type": "",
-        "finish_reason": "stop"
-    }
-
 class DeepSeekLLMClient:
     def __init__(self, api_key, model="deepseek-r1-250120"):
         self.api_key = api_key
@@ -15,13 +8,18 @@ class DeepSeekLLMClient:
         self.base_url = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
 
     def chat_completions(self, messages):
+
+        
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}"
         }
         data = {
             "model": self.model,
-            "messages": messages,
+            "messages": [
+                    {"role": m["role"], "content": m["content"], "type": m["type"]}
+                    for m in messages if m['type'] == 'text'
+                ],
             "stream": True,
         }
 
@@ -67,8 +65,6 @@ class DeepSeekLLMClient:
                             content = "\n\n思维链结果: " + content
                             is_first_content_token = False
                         yield {"role": "assistant", "delta": content, "type": "text", "finish_reason": ""}
-
-        yield end_of_message_data
 
 # 示例用法
 if __name__ == "__main__":

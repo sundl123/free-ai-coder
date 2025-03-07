@@ -39,6 +39,10 @@ python3.11 -m streamlit run app.py
 4. 集成matplotlib, 用于展示画图功能
 5. 支持多个不同的会话同时运行，支持不同会话之间的数据隔离
 
+## Change Log
+
+- 20240307 新增DeepSeek V3/R1 对话模型支持(支持纯对话，暂不支持代码解释器). API Key/Model Endpoint 申请参考火山云平台: https://www.volcengine.com/docs/82379/1449737
+
 ## Other Recommendations
 
 如果你不想要想要自己搭建本地沙盒环境，或者没有自己的OpenAI的API Key, 推荐使用商汤科技的办公小浣熊，https://xiaohuanxiong.com/office

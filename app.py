@@ -39,6 +39,8 @@ OPENAI_MODELS = ["gpt-4-turbo-preview", "gpt-4-turbo"]
 MODEL_PROVIDER_KEY = "model_provider"
 OPENAI_API_KEY_KEY = "openai_api_key"
 OPENAI_MODEL_KEY = "openai_model"
+DEEPSEEK_API_KEY_KEY = "deepseek_api_key"
+DEEPSEEK_MODEL_ENDPOINT_KEY = "deepseek_model_endpoint"
 
 def extract_delta_stream(stream):
     for value in stream:
@@ -164,7 +166,7 @@ def setup_sidebar_config_panel():
         # 选择模型提供商
         model_provider = st.radio(
             "选择模型提供商",
-            options=["OpenAI", "Claude", "商汤小浣熊", "DeepSeek"],  # 添加 DeepSeek 选项
+            options=["OpenAI", "Claude", "商汤小浣熊", "DeepSeek"],
             key=MODEL_PROVIDER_KEY
         )
 
@@ -189,13 +191,13 @@ def setup_sidebar_config_panel():
             deepseek_api_key = st.text_input(
                 "DeepSeek API Key",
                 type="password",
-                key="deepseek_api_key",
+                key=DEEPSEEK_API_KEY_KEY,
                 help="请输入您的 DeepSeek API Key"
             )
             deepseek_model_endpoint = st.text_input(
                 "DeepSeek Model Endpoint",
                 type="password",
-                key="deepseek_model_endpoint",
+                key= DEEPSEEK_MODEL_ENDPOINT_KEY,
                 help="请输入您的 DeepSeek API Key"
             )
 
@@ -221,8 +223,6 @@ def setup_sidebar_config_panel():
                 # 重新初始化 LLM 客户端
                 if LLM_CLIENT_KEY in st.session_state:
                     del st.session_state[LLM_CLIENT_KEY]
-                
-                st.session_state["model_provider_str"] = model_provider
 
                 if model_provider == "OpenAI":
                     st.session_state[LLM_CLIENT_KEY] = OpenAILLMClient(
@@ -317,7 +317,7 @@ def set_up_user_input_box(session_dir_path:str, kernel_client):
                     response = st.write_stream(extract_delta_stream(stream))
                 st.session_state.messages.append({"role": "assistant", "content": response, 'type': 'text'})
 
-                if st.session_state["model_provider_str"] == "DeepSeek":
+                if st.session_state[MODEL_PROVIDER_KEY] == "DeepSeek":
                     break
             elif event["type"] == "code":
                 # display code
@@ -371,7 +371,6 @@ def set_up_user_input_box(session_dir_path:str, kernel_client):
                     with st.chat_message("assistant", avatar=AVATAR_MATERIAL_ICON_IMAGE):
                         st.image(img_url, caption=os.path.basename(img_url))
             elif event["finish_reason"] == "stop":
-                print("Stream finished by user stop.")
                 drain_stream(stream)
                 break
 
