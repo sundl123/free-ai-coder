@@ -14,6 +14,14 @@ A free chatgpt code interpreter implementation, which runs locally on your compu
 
 [![从零开始 打造自己的AI数据分析助手](assets/demo.jpg)](https://www.bilibili.com/video/BV1s5FXe5EFg/?share_source=copy_web&vd_source=981c39eaab5e0c91fb090a05f55c2d4a)
 
+## Feature
+
+1. 支持对接各种不同的通用AI model(后续计划支持Claude 3.5, Gemini Pro，当然也欢迎PR)
+2. Privacy，数据文件不上传云端，支持本地运行python sandbox，执行数据分析。
+3. 支持沙盒文件上传/下载
+4. 集成matplotlib, 用于展示画图功能
+5. 支持多个不同的会话同时运行，支持不同会话之间的数据隔离
+
 ## Quick Start
 
 ```bash
@@ -31,13 +39,24 @@ jupyter enterprisegateway --port 8889
 python3.11 -m streamlit run app.py
 ```
 
-## Feature
+## Dependencies
 
-1. 支持对接各种不同的通用AI model(后续计划支持Claude 3.5, Gemini Pro，当然也欢迎PR)
-2. Privacy，数据文件不上传云端，支持本地运行python sandbox，执行数据分析。
-3. 支持沙盒文件上传/下载
-4. 集成matplotlib, 用于展示画图功能
-5. 支持多个不同的会话同时运行，支持不同会话之间的数据隔离
+Notes: 建议使用 Python 3.11版本，因为 有同学反馈使用其他Python运行 Jupyter Enterprise Gateway 会有问题。
+
+以下是我使用的相关python库的版本供参考，其他的版本还没空做详细的测试。
+```bash
+tornado                                  6.4
+jupyter_enterprise_gateway               3.2.3
+jupyter_client                           8.6.3
+jupyter_core                             5.7.2
+jupyter-events                           0.12.0
+jupyter-lsp                              2.2.5
+jupyter_server                           2.15.0
+jupyter_server_terminals                 0.5.3
+jupyterlab                               4.3.5
+jupyterlab_pygments                      0.3.0
+jupyterlab_server                        2.27.2
+```
 
 ## Change Log
 
